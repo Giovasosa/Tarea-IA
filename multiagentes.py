@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyP+/ElnJB94TJPsX7mFKuHP",
+      "authorship_tag": "ABX9TyNN0ISPTxNsGU4rX/MWYJXt",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -827,6 +827,406 @@
         "\n",
         "agente2   = AgenteEntrenador()\n",
         "resultado = agente2.procesar(df_limpio, df_raw)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "b862d50b",
+        "outputId": "755274e9-5572-4ce3-c122-065cc71aa7ec",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 1000,
+          "referenced_widgets": [
+            "cf054edc28934f45af3f634c5f2e5a86",
+            "d01ebe6441424a0ea04a3e1b18fd3818",
+            "cb97c17cb9234aeb99fdb6261777e99a",
+            "6633b44ef9f844da9c5a566086129041",
+            "a42af2339e5b4de4b54f907a3eb9c143",
+            "cc953baacd6f448a8d8ea6bb4b2a8fd4",
+            "8c2d2e337d75432d80477d10ea97e5e4",
+            "9a3e8244d54d4e9d9ef6abdc5b025d5e",
+            "96f3c7fd53fa42b7961d4681c7aa457a",
+            "59ee7a73b8d9468b903d1be37c3f3996",
+            "e06088293597433385aa166db52ace1b",
+            "0972c7bce4d24ab7a69f209952eb4eb0",
+            "3bf451594c2a4c529189b811fd68b003",
+            "79f03ec0d5ff46aabf5f9ea5b68c7136",
+            "4c0bb87cc6bb4c6f9fa43ad479522b4a",
+            "ac048eb39b614d03b6f956f925cdbd03",
+            "1f9c2e66426545eba617e33386cf6045",
+            "bfa3f60f3ffa42ada8ca7b30af797b5f",
+            "0944a5350a194fbcb3821f2f69913b9e",
+            "1fbe372f60724a7986d76eba14327f8f",
+            "2e518efb17204defa36594c5fe57bcb2",
+            "9e28010d484043e4b1c2119763f00858",
+            "bf67bf2af47541a8ac25e32c6321b0b7",
+            "1ce048fcee7e47edb9b4e5628744aaf9",
+            "029f1bbfb9f642c180720568dae7286e",
+            "30e283318ae348a9abd3762a809a581d",
+            "d346cd777b604a37af568c78c5e68330",
+            "3815f3c6a4dc4124837c7057c1aff7ac",
+            "70dd9ef8366e4931ba170e0c4196d6f5",
+            "be1e49733ac14383b31ecd7c45b84f9f",
+            "1a1ea9e6701747e4bdc504345f931f3c",
+            "35f2f7a163164601b63c8e25a007d22c",
+            "815bc32e02394241bc1f3b40cf7d54c5",
+            "c1265d739662459b8a6b246ea352b017",
+            "a487ce2585dc4adaba37234970ad7761",
+            "44e51efe099e4509b61687f89d701fec",
+            "3f3b0604179049daa846b9a397365324",
+            "88ddd1aa0b644c259a023314aaddb19a",
+            "dcf30eca7a0a4674bd03922b233f01e1",
+            "b5bb1941a32d46b2bb3cff74d7f8ac3b",
+            "9f55d518ff1d43bcaae19b24f5c2ecb4",
+            "7a6945a10b884e79b7a1032844a3d4f6",
+            "0edd15c8606244099dbf07f8c9f43f08",
+            "761b7644356244eca1776b9fa1970aab",
+            "2afc250cb3a249f280c05ce12ccd3e88",
+            "33e8c38baea247d7b738b46131796a87",
+            "05c5d16c76f347168b1c7b3b9d969c38",
+            "ba73fbacde66449585f6f84ad5026f3e",
+            "172954103f02472faeb7a32d72208b2a",
+            "f6a5c5290f53482c9d28d4a419bb3bf1",
+            "ffbe05d09fc94a67ab45fd519748636f",
+            "2686b3fe27524d36aabab20b9107a1ca",
+            "47da660152e844ce977a4a5c4baeb249",
+            "3483910d7b6144758da0e630c614ed7b",
+            "c535144538c94a7c84f1817009e8ff8f",
+            "5b554b605f8342358ff9618eabaafc4c",
+            "36b0b38dc89f46fa9b84e68bbcd12319",
+            "4766a82f34014ee3a950f65685108769",
+            "18a6ff2e4bad4dbd8c0495f598906b50",
+            "2a63d9e334244f6e9ec0c04d88992c2a",
+            "70eb90e9a75c46ed967b64790e9232f5",
+            "16c3272269704803a15c82e495164831",
+            "09dff1dc49c648f69c2b0b607f08ba66",
+            "7ded56a1fefa4e99b79e250c7b0e9a7c",
+            "3d2740d029154eeb8a7272c3daf8eebf",
+            "551bb9a913df47b5a48b2af8b6868785",
+            "3ebc7f26019045258d1fd4cf0acf042e",
+            "912ec256f29f4c94a82378a116833f24",
+            "07d041adbcb741e98561ce79e3d53b27",
+            "9f698e4c09a042a79536dd075af083bb",
+            "5c7b1b3a61a148c19c02c09171136f95",
+            "4f39602a5b7d4d27b06aaa29969f7d11",
+            "e5736b69eace47d58eee1c64385bcf67",
+            "fde97452366145dfb5b6b5e4363b027e",
+            "3deda61104414d7991e803059cf2f96b",
+            "b7c8103093104df9a7ad52b3589c8f2e",
+            "317fc847893b46b9bb8e8dcbf8b89cf6",
+            "11d79edad13342e082d4e2174693f3cd",
+            "34dc033dffd2416c880250010bc85e5e",
+            "56e08de25b974572ac852397707438e0",
+            "1258276b669d4d8cbd4ee217e80f5e50",
+            "b44a151e06604928b3089091d3ec9b80",
+            "ff14303a34f642f887787f6b8bcb9547",
+            "09a1e32b60c743919d8dee120fc20b76",
+            "8f4195a4981442ceb5154a675c994888",
+            "17fbb5c68ba34276a9be1d0630f3ff60",
+            "2e60d0d6f80144049d48d3665d29b4f6",
+            "2738b3ac151f49609b0dbeff04ed433e",
+            "8054979056b944aabf72554bf5cf6972",
+            "a857977971234d56ab7940325604f9e0",
+            "dc0682ddbe474536b6190a2fc53e4ad4",
+            "9d0eebe9eee340c7841daf731ca4ff20",
+            "4777450b560a4383b70c0f08563e9afa",
+            "b48850dcaad94320a1e7a72a5785ca74",
+            "1e624bfc57e8413fbb272a22c56526cb",
+            "1737025ea3a8427c9a696444f2414b5e",
+            "4613657f2807415d8e8b1cda2905b6bb",
+            "941a4f36cefe48fc87a5b1dc85d5ff8e",
+            "5449ffb2cb7d45e089baf4c9de0ad880"
+          ]
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "=======================================================\n",
+            "AGENTE 3 — Comunicador RAG\n",
+            "=======================================================\n",
+            "  [RAG] Cargando embedder...\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]"
+            ],
+            "application/vnd.jupyter.widget-view+json": {
+              "version_major": 2,
+              "version_minor": 0,
+              "model_id": "cf054edc28934f45af3f634c5f2e5a86"
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "  [RAG] Índice FAISS: 12 docs, dim=384\n",
+            "  [GEN] Cargando generador de texto...\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "config.json:   0%|          | 0.00/662 [00:00<?, ?B/s]"
+            ],
+            "application/vnd.jupyter.widget-view+json": {
+              "version_major": 2,
+              "version_minor": 0,
+              "model_id": "0972c7bce4d24ab7a69f209952eb4eb0"
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "pytorch_model.bin:   0%|          | 0.00/2.51M [00:00<?, ?B/s]"
+            ],
+            "application/vnd.jupyter.widget-view+json": {
+              "version_major": 2,
+              "version_minor": 0,
+              "model_id": "bf67bf2af47541a8ac25e32c6321b0b7"
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "Loading weights:   0%|          | 0/29 [00:00<?, ?it/s]"
+            ],
+            "application/vnd.jupyter.widget-view+json": {
+              "version_major": 2,
+              "version_minor": 0,
+              "model_id": "c1265d739662459b8a6b246ea352b017"
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[transformers] \u001b[1mGPT2LMHeadModel LOAD REPORT\u001b[0m from: sshleifer/tiny-gpt2\n",
+            "Key                                   | Status     |  | \n",
+            "--------------------------------------+------------+--+-\n",
+            "transformer.h.{0, 1}.attn.masked_bias | UNEXPECTED |  | \n",
+            "\n",
+            "Notes:\n",
+            "- UNEXPECTED:\tcan be ignored when loading from different task/architecture; not ok if you expect identical arch.\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "tokenizer_config.json:   0%|          | 0.00/26.0 [00:00<?, ?B/s]"
+            ],
+            "application/vnd.jupyter.widget-view+json": {
+              "version_major": 2,
+              "version_minor": 0,
+              "model_id": "2afc250cb3a249f280c05ce12ccd3e88"
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "model.safetensors:   0%|          | 0.00/2.51M [00:00<?, ?B/s]"
+            ],
+            "application/vnd.jupyter.widget-view+json": {
+              "version_major": 2,
+              "version_minor": 0,
+              "model_id": "5b554b605f8342358ff9618eabaafc4c"
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "vocab.json:   0%|          | 0.00/899k [00:00<?, ?B/s]"
+            ],
+            "application/vnd.jupyter.widget-view+json": {
+              "version_major": 2,
+              "version_minor": 0,
+              "model_id": "3ebc7f26019045258d1fd4cf0acf042e"
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "merges.txt:   0%|          | 0.00/456k [00:00<?, ?B/s]"
+            ],
+            "application/vnd.jupyter.widget-view+json": {
+              "version_major": 2,
+              "version_minor": 0,
+              "model_id": "11d79edad13342e082d4e2174693f3cd"
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "special_tokens_map.json:   0%|          | 0.00/90.0 [00:00<?, ?B/s]"
+            ],
+            "application/vnd.jupyter.widget-view+json": {
+              "version_major": 2,
+              "version_minor": 0,
+              "model_id": "8054979056b944aabf72554bf5cf6972"
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[transformers] Passing `generation_config` together with generation-related arguments=({'max_new_tokens'}) is deprecated and will be removed in future versions. Please pass either a `generation_config` object OR all generation parameters explicitly, but not both.\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "  Agente 3 RAG listo\n",
+            "\n",
+            "[RAG] Documentos recuperados para el reporte:\n",
+            "  1. Un modelo con accuracy superior al 85% es confiable para predecir rendimien...\n",
+            "  2. La validación cruzada con 5 folds es el estándar para datasets medianos de ...\n",
+            "  3. Los estudiantes con bajo rendimiento generalmente presentan asistencia meno...\n",
+            "\n",
+            "=======================================================\n",
+            "REPORTE FINAL — Agente 3 RAG\n",
+            "=======================================================\n",
+            "Dataset: 600 estudiantes, 8 variables\n",
+            "Nulos imputados: 78\n",
+            "Distribución: alto=223, medio=213, bajo=164\n",
+            "\n",
+            "Modelos (CV 5-fold + embeddings):\n",
+            "  Random Forest: 0.9833 +/- 0.0091\n",
+            "  Gradient Boosting: 0.9883 +/- 0.0113\n",
+            "  Logistic Regression: 0.9917 +/- 0.0075\n",
+            "\n",
+            "Modelo seleccionado: Logistic Regression | Accuracy: 0.9917 (99.2%)\n",
+            "\n",
+            "Contexto pedagógico recuperado por RAG:\n",
+            "  1. Un modelo con accuracy superior al 85% es confiable para predecir rendimiento académico.\n",
+            "  2. La validación cruzada con 5 folds es el estándar para datasets medianos de entre 100 y 1000 registros.\n",
+            "  3. Los estudiantes con bajo rendimiento generalmente presentan asistencia menor al 65% y promedios inferiores a 5.0.\n",
+            "=======================================================\n"
+          ]
+        }
+      ],
+      "source": [
+        "KNOWLEDGE_BASE = [\n",
+        "    \"Un rendimiento académico alto se asocia con asistencia superior al 85% y notas promedio mayores a 7.5.\",\n",
+        "    \"Los estudiantes con bajo rendimiento generalmente presentan asistencia menor al 65% y promedios inferiores a 5.0.\",\n",
+        "    \"La nota de matemática tiene alta correlación con el rendimiento general en ciencias exactas.\",\n",
+        "    \"El turno mañana suele presentar mejores índices de rendimiento por factores de concentración y descanso.\",\n",
+        "    \"La intervención temprana en estudiantes con bajo rendimiento puede revertir la situación en un cuatrimestre.\",\n",
+        "    \"Un modelo con accuracy superior al 85% es confiable para predecir rendimiento académico.\",\n",
+        "    \"Los embeddings semánticos capturan relaciones complejas entre variables académicas que los métodos clásicos no detectan.\",\n",
+        "    \"La validación cruzada con 5 folds es el estándar para datasets medianos de entre 100 y 1000 registros.\",\n",
+        "    \"El Gradient Boosting suele superar a Random Forest en datasets con variables mixtas y distribuciones sesgadas.\",\n",
+        "    \"La imputación por mediana es más robusta que la media ante valores extremos en notas académicas.\",\n",
+        "    \"Datasets de 600 registros permiten una validación cruzada más estable que los de 100 registros.\",\n",
+        "    \"Con mayor volumen de datos, Random Forest puede igualar o superar a Gradient Boosting gracias al bagging.\",\n",
+        "]\n",
+        "\n",
+        "\n",
+        "class AgenteComunicadorRAG:\n",
+        "    def __init__(self, knowledge_base):\n",
+        "        print(\"=\" * 55)\n",
+        "        print(\"AGENTE 3 — Comunicador RAG\")\n",
+        "        print(\"=\" * 55)\n",
+        "        print(\"  [RAG] Cargando embedder...\")\n",
+        "        self.embedder       = SentenceTransformer(\"all-MiniLM-L6-v2\")\n",
+        "        self.knowledge_base = knowledge_base\n",
+        "        self._construir_indice(knowledge_base)\n",
+        "        print(\"  [GEN] Cargando generador de texto...\")\n",
+        "        self.generador = pipeline(\"text-generation\", model=\"sshleifer/tiny-gpt2\", max_new_tokens=60)\n",
+        "        print(\"  Agente 3 RAG listo\")\n",
+        "\n",
+        "    def _construir_indice(self, docs):\n",
+        "        embeddings  = self.embedder.encode(docs, show_progress_bar=False)\n",
+        "        dim         = embeddings.shape[1]\n",
+        "        self.indice = faiss.IndexFlatL2(dim)\n",
+        "        self.indice.add(embeddings.astype(\"float32\"))\n",
+        "        print(f\"  [RAG] Índice FAISS: {len(docs)} docs, dim={dim}\")\n",
+        "\n",
+        "    def recuperar(self, query, top_k=3):\n",
+        "        q_emb = self.embedder.encode([query], show_progress_bar=False).astype(\"float32\")\n",
+        "        _, indices = self.indice.search(q_emb, top_k)\n",
+        "        return [self.knowledge_base[i] for i in indices[0]]\n",
+        "\n",
+        "    def responder_pregunta(self, pregunta, df_original):\n",
+        "        print(f\"\\nPregunta: {pregunta}\")\n",
+        "        print(\"-\" * 50)\n",
+        "        docs = self.recuperar(pregunta, top_k=2)\n",
+        "        dist = df_original[\"rendimiento\"].value_counts().to_dict()\n",
+        "        stats = (\n",
+        "            f\"Total estudiantes: {len(df_original)}. \"\n",
+        "            f\"Alto: {dist.get('alto', 0)}, Medio: {dist.get('medio', 0)}, Bajo: {dist.get('bajo', 0)}. \"\n",
+        "            f\"Prom. matemática: {df_original['nota_matematica'].mean():.1f}. \"\n",
+        "            f\"Prom. asistencia: {df_original['asistencia_pct'].mean():.1f}%.\"\n",
+        "        )\n",
+        "        print(f\"Datos: {stats}\")\n",
+        "        print(\"Contexto RAG recuperado:\")\n",
+        "        for i, doc in enumerate(docs, 1):\n",
+        "            print(f\"  {i}. {doc}\")\n",
+        "\n",
+        "    def generar_reporte(self, resultado, df_original):\n",
+        "        mejor    = resultado[\"nombre_modelo\"]\n",
+        "        acc      = resultado[\"mejor_accuracy\"]\n",
+        "        metricas = resultado[\"metricas\"]\n",
+        "        query    = f\"modelo {mejor} accuracy {acc:.2f} clasificacion rendimiento estudiantes\"\n",
+        "        docs_ctx = self.recuperar(query, top_k=3)\n",
+        "        print(\"\\n[RAG] Documentos recuperados para el reporte:\")\n",
+        "        for i, doc in enumerate(docs_ctx, 1):\n",
+        "            print(f\"  {i}. {doc[:75]}...\")\n",
+        "        dist = df_original[\"rendimiento\"].value_counts().to_dict()\n",
+        "        print(\"\\n\" + \"=\" * 55)\n",
+        "        print(\"REPORTE FINAL — Agente 3 RAG\")\n",
+        "        print(\"=\" * 55)\n",
+        "        print(f\"Dataset: {len(df_original)} estudiantes, {df_original.shape[1]} variables\")\n",
+        "        print(f\"Nulos imputados: {df_original.isnull().sum().sum()}\")\n",
+        "        print(f\"Distribución: alto={dist.get('alto',0)}, medio={dist.get('medio',0)}, bajo={dist.get('bajo',0)}\")\n",
+        "        print()\n",
+        "        print(\"Modelos (CV 5-fold + embeddings):\")\n",
+        "        for nombre, m in metricas.items():\n",
+        "            print(f\"  {nombre}: {m['accuracy_media']} +/- {m['std']}\")\n",
+        "        print(f\"\\nModelo seleccionado: {mejor} | Accuracy: {acc:.4f} ({acc*100:.1f}%)\")\n",
+        "        print()\n",
+        "        print(\"Contexto pedagógico recuperado por RAG:\")\n",
+        "        for i, doc in enumerate(docs_ctx, 1):\n",
+        "            print(f\"  {i}. {doc}\")\n",
+        "        print(\"=\" * 55)\n",
+        "\n",
+        "\n",
+        "agente3 = AgenteComunicadorRAG(KNOWLEDGE_BASE)\n",
+        "agente3.generar_reporte(resultado, df_raw)"
       ]
     }
   ]
