@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyO8FQ6lZfSSwJIAhR+u9mmR",
+      "authorship_tag": "ABX9TyP+/ElnJB94TJPsX7mFKuHP",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -699,6 +699,134 @@
         "agente1   = AgenteNormalizador()\n",
         "df_limpio = agente1.procesar(df_raw)\n",
         "df_limpio.head()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "background_save": true,
+          "base_uri": "https://localhost:8080/",
+          "height": 225,
+          "referenced_widgets": [
+            "5b841d8751074704b004b71cec81077e"
+          ]
+        },
+        "id": "9cc88377",
+        "outputId": "7d4c983d-650a-4455-8255-b765e3bfaa16"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "=======================================================\n",
+            "AGENTE 2 — Entrenador\n",
+            "=======================================================\n",
+            "  Cargando embedder: all-MiniLM-L6-v2\n"
+          ]
+        },
+        {
+          "data": {
+            "application/vnd.jupyter.widget-view+json": {
+              "model_id": "5b841d8751074704b004b71cec81077e",
+              "version_major": 2,
+              "version_minor": 0
+            },
+            "text/plain": [
+              "Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]"
+            ]
+          },
+          "metadata": {},
+          "output_type": "display_data"
+        },
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "\n",
+            "  [Embeddings] Generando representaciones semánticas...\n",
+            "  [Embeddings] Shape: (600, 384)\n",
+            "  [Features] 6 numéricas + 384 embedding = 390 total\n",
+            "\n",
+            "  [Entrenamiento] Validación cruzada cv=5:\n",
+            "    Random Forest: 0.9833 +/- 0.0091\n",
+            "    Gradient Boosting: 0.9883 +/- 0.0113\n",
+            "    Logistic Regression: 0.9917 +/- 0.0075\n",
+            "\n",
+            "  Mejor modelo: Logistic Regression (0.9917)\n"
+          ]
+        }
+      ],
+      "source": [
+        "class AgenteEntrenador:\n",
+        "    def __init__(self, modelo_emb=\"all-MiniLM-L6-v2\"):\n",
+        "        print(\"=\" * 55)\n",
+        "        print(\"AGENTE 2 — Entrenador\")\n",
+        "        print(\"=\" * 55)\n",
+        "        print(f\"  Cargando embedder: {modelo_emb}\")\n",
+        "        self.embedder      = SentenceTransformer(modelo_emb)\n",
+        "        self.mejor_modelo  = None\n",
+        "        self.mejor_score   = 0\n",
+        "        self.mejor_nombre  = \"\"\n",
+        "        self.metricas      = {}\n",
+        "\n",
+        "    def generar_embeddings(self, df_orig):\n",
+        "        print(\"\\n  [Embeddings] Generando representaciones semánticas...\")\n",
+        "        textos = df_orig.apply(\n",
+        "            lambda r: (\n",
+        "                f\"estudiante de {r['edad']} anios, turno {r['turno']}, \"\n",
+        "                f\"notas: matematica {r['nota_matematica']}, \"\n",
+        "                f\"lengua {r['nota_lengua']}, ciencias {r['nota_ciencias']}, \"\n",
+        "                f\"asistencia {r['asistencia_pct']}%\"\n",
+        "            ),\n",
+        "            axis=1,\n",
+        "        ).tolist()\n",
+        "        emb = self.embedder.encode(textos, show_progress_bar=False)\n",
+        "        print(f\"  [Embeddings] Shape: {emb.shape}\")\n",
+        "        return emb\n",
+        "\n",
+        "    def construir_features(self, df, emb):\n",
+        "        cols = [\"edad\", \"nota_matematica\", \"nota_lengua\", \"nota_ciencias\", \"asistencia_pct\", \"turno_enc\"]\n",
+        "        X = np.hstack([df[cols].values, emb])\n",
+        "        print(f\"  [Features] {len(cols)} numéricas + {emb.shape[1]} embedding = {X.shape[1]} total\")\n",
+        "        return X\n",
+        "\n",
+        "    def entrenar(self, X, y):\n",
+        "        print(\"\\n  [Entrenamiento] Validación cruzada cv=5:\")\n",
+        "        candidatos = {\n",
+        "            \"Random Forest\":       RandomForestClassifier(n_estimators=100, random_state=42),\n",
+        "            \"Gradient Boosting\":   GradientBoostingClassifier(n_estimators=100, random_state=42),\n",
+        "            \"Logistic Regression\": LogisticRegression(max_iter=500, random_state=42),\n",
+        "        }\n",
+        "        for nombre, modelo in candidatos.items():\n",
+        "            scores = cross_val_score(modelo, X, y, cv=5, scoring=\"accuracy\")\n",
+        "            m, s   = scores.mean(), scores.std()\n",
+        "            self.metricas[nombre] = {\"accuracy_media\": round(m, 4), \"std\": round(s, 4)}\n",
+        "            print(f\"    {nombre}: {m:.4f} +/- {s:.4f}\")\n",
+        "            if m > self.mejor_score:\n",
+        "                self.mejor_score  = m\n",
+        "                self.mejor_nombre = nombre\n",
+        "                self.mejor_modelo = modelo\n",
+        "        self.mejor_modelo.fit(X, y)\n",
+        "        print(f\"\\n  Mejor modelo: {self.mejor_nombre} ({self.mejor_score:.4f})\")\n",
+        "\n",
+        "    def procesar(self, df, df_orig):\n",
+        "        emb = self.generar_embeddings(df_orig)\n",
+        "        X   = self.construir_features(df, emb)\n",
+        "        y   = df[\"rendimiento_enc\"].values\n",
+        "        self.entrenar(X, y)\n",
+        "        return {\n",
+        "            \"modelo\":         self.mejor_modelo,\n",
+        "            \"nombre_modelo\":  self.mejor_nombre,\n",
+        "            \"metricas\":       self.metricas,\n",
+        "            \"mejor_accuracy\": self.mejor_score,\n",
+        "            \"X\": X, \"y\": y,\n",
+        "        }\n",
+        "\n",
+        "agente2   = AgenteEntrenador()\n",
+        "resultado = agente2.procesar(df_limpio, df_raw)"
       ]
     }
   ]
