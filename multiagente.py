@@ -91,6 +91,7 @@ def generar_dataset(n: int = 600, seed: int = 42) -> pd.DataFrame:
 df_raw = generar_dataset(n=600, seed=42)
 df_raw.head(8)
 
+#AGENTE 1
 class AgenteNormalizador:
     def __init__(self):
         self.scaler         = StandardScaler()
@@ -146,6 +147,7 @@ agente1   = AgenteNormalizador()
 df_limpio = agente1.procesar(df_raw)
 df_limpio.head()
 
+#AGENTE 2
 class AgenteEntrenador:
     def __init__(self, modelo_emb="all-MiniLM-L6-v2"):
         print("=" * 55)
@@ -213,3 +215,106 @@ class AgenteEntrenador:
 
 agente2   = AgenteEntrenador()
 resultado = agente2.procesar(df_limpio, df_raw)
+
+#AGENTE 3
+
+KNOWLEDGE_BASE = [
+    "Un rendimiento académico alto se asocia con asistencia superior al 85% y notas promedio mayores a 7.5.",
+    "Los estudiantes con bajo rendimiento generalmente presentan asistencia menor al 65% y promedios inferiores a 5.0.",
+    "La nota de matemática tiene alta correlación con el rendimiento general en ciencias exactas.",
+    "El turno mañana suele presentar mejores índices de rendimiento por factores de concentración y descanso.",
+    "La intervención temprana en estudiantes con bajo rendimiento puede revertir la situación en un cuatrimestre.",
+    "Un modelo con accuracy superior al 85% es confiable para predecir rendimiento académico.",
+    "Los embeddings semánticos capturan relaciones complejas entre variables académicas que los métodos clásicos no detectan.",
+    "La validación cruzada con 5 folds es el estándar para datasets medianos de entre 100 y 1000 registros.",
+    "El Gradient Boosting suele superar a Random Forest en datasets con variables mixtas y distribuciones sesgadas.",
+    "La imputación por mediana es más robusta que la media ante valores extremos en notas académicas.",
+    "Datasets de 600 registros permiten una validación cruzada más estable que los de 100 registros.",
+    "Con mayor volumen de datos, Random Forest puede igualar o superar a Gradient Boosting gracias al bagging.",
+]
+
+
+class AgenteComunicadorRAG:
+    def __init__(self, knowledge_base):
+        print("=" * 55)
+        print("AGENTE 3 — Comunicador RAG")
+        print("=" * 55)
+        print("  [RAG] Cargando embedder...")
+        self.embedder       = SentenceTransformer("all-MiniLM-L6-v2")
+        self.knowledge_base = knowledge_base
+        self._construir_indice(knowledge_base)
+        print("  [GEN] Cargando generador de texto...")
+        self.generador = pipeline("text-generation", model="sshleifer/tiny-gpt2", max_new_tokens=60)
+        print("  Agente 3 RAG listo")
+
+    def _construir_indice(self, docs):
+        embeddings  = self.embedder.encode(docs, show_progress_bar=False)
+        dim         = embeddings.shape[1]
+        self.indice = faiss.IndexFlatL2(dim)
+        self.indice.add(embeddings.astype("float32"))
+        print(f"  [RAG] Índice FAISS: {len(docs)} docs, dim={dim}")
+
+    def recuperar(self, query, top_k=3):
+        q_emb = self.embedder.encode([query], show_progress_bar=False).astype("float32")
+        _, indices = self.indice.search(q_emb, top_k)
+        return [self.knowledge_base[i] for i in indices[0]]
+
+    def responder_pregunta(self, pregunta, df_original):
+        print(f"\nPregunta: {pregunta}")
+        print("-" * 50)
+        docs = self.recuperar(pregunta, top_k=2)
+        dist = df_original["rendimiento"].value_counts().to_dict()
+        stats = (
+            f"Total estudiantes: {len(df_original)}. "
+            f"Alto: {dist.get('alto', 0)}, Medio: {dist.get('medio', 0)}, Bajo: {dist.get('bajo', 0)}. "
+            f"Prom. matemática: {df_original['nota_matematica'].mean():.1f}. "
+            f"Prom. asistencia: {df_original['asistencia_pct'].mean():.1f}%."
+        )
+        print(f"Datos: {stats}")
+        print("Contexto RAG recuperado:")
+        for i, doc in enumerate(docs, 1):
+            print(f"  {i}. {doc}")
+
+    def generar_reporte(self, resultado, df_original):
+        mejor    = resultado["nombre_modelo"]
+        acc      = resultado["mejor_accuracy"]
+        metricas = resultado["metricas"]
+        query    = f"modelo {mejor} accuracy {acc:.2f} clasificacion rendimiento estudiantes"
+        docs_ctx = self.recuperar(query, top_k=3)
+        print("\n[RAG] Documentos recuperados para el reporte:")
+        for i, doc in enumerate(docs_ctx, 1):
+            print(f"  {i}. {doc[:75]}...")
+        dist = df_original["rendimiento"].value_counts().to_dict()
+        print("\n" + "=" * 55)
+        print("REPORTE FINAL — Agente 3 RAG")
+        print("=" * 55)
+        print(f"Dataset: {len(df_original)} estudiantes, {df_original.shape[1]} variables")
+        print(f"Nulos imputados: {df_original.isnull().sum().sum()}")
+        print(f"Distribución: alto={dist.get('alto',0)}, medio={dist.get('medio',0)}, bajo={dist.get('bajo',0)}")
+        print()
+        print("Modelos (CV 5-fold + embeddings):")
+        for nombre, m in metricas.items():
+            print(f"  {nombre}: {m['accuracy_media']} +/- {m['std']}")
+        print(f"\nModelo seleccionado: {mejor} | Accuracy: {acc:.4f} ({acc*100:.1f}%)")
+        print()
+        print("Contexto pedagógico recuperado por RAG:")
+        for i, doc in enumerate(docs_ctx, 1):
+            print(f"  {i}. {doc}")
+        print("=" * 55)
+
+
+agente3 = AgenteComunicadorRAG(KNOWLEDGE_BASE)
+agente3.generar_reporte(resultado, df_raw)
+
+agente3.responder_pregunta(
+    "Cuántos estudiantes tienen bajo rendimiento y qué se puede hacer?",
+    df_raw
+)
+
+agente3.responder_pregunta(
+    "Es confiable el modelo para predecir rendimiento?",
+    df_raw
+)
+
+mi_pregunta = "Qué relación hay entre asistencia y notas de matemática?"
+agente3.responder_pregunta(mi_pregunta, df_raw)
