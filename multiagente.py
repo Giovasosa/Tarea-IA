@@ -301,3 +301,17 @@ class AgenteComunicadorRAG:
 
 agente3 = AgenteComunicadorRAG(KNOWLEDGE_BASE)
 agente3.generar_reporte(resultado, df_raw)
+
+agente3.responder_pregunta(
+    "Cuántos estudiantes tienen bajo rendimiento y qué se puede hacer?",
+    df_raw
+)
+
+agente3.responder_pregunta(
+    "Es confiable el modelo para predecir rendimiento?",
+    df_raw
+)
+
+# Cambia esta pregunta por lo que quieras consultar
+mi_pregunta = "Qué relación hay entre asistencia y notas de matemática?"
+agente3.responder_pregunta(mi_pregunta, df_raw)
