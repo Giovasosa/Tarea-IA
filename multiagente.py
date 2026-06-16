@@ -145,3 +145,71 @@ class AgenteNormalizador:
 agente1   = AgenteNormalizador()
 df_limpio = agente1.procesar(df_raw)
 df_limpio.head()
+
+class AgenteEntrenador:
+    def __init__(self, modelo_emb="all-MiniLM-L6-v2"):
+        print("=" * 55)
+        print("AGENTE 2 — Entrenador")
+        print("=" * 55)
+        print(f"  Cargando embedder: {modelo_emb}")
+        self.embedder      = SentenceTransformer(modelo_emb)
+        self.mejor_modelo  = None
+        self.mejor_score   = 0
+        self.mejor_nombre  = ""
+        self.metricas      = {}
+
+    def generar_embeddings(self, df_orig):
+        print("\n  [Embeddings] Generando representaciones semánticas...")
+        textos = df_orig.apply(
+            lambda r: (
+                f"estudiante de {r['edad']} anios, turno {r['turno']}, "
+                f"notas: matematica {r['nota_matematica']}, "
+                f"lengua {r['nota_lengua']}, ciencias {r['nota_ciencias']}, "
+                f"asistencia {r['asistencia_pct']}%"
+            ),
+            axis=1,
+        ).tolist()
+        emb = self.embedder.encode(textos, show_progress_bar=False)
+        print(f"  [Embeddings] Shape: {emb.shape}")
+        return emb
+
+    def construir_features(self, df, emb):
+        cols = ["edad", "nota_matematica", "nota_lengua", "nota_ciencias", "asistencia_pct", "turno_enc"]
+        X = np.hstack([df[cols].values, emb])
+        print(f"  [Features] {len(cols)} numéricas + {emb.shape[1]} embedding = {X.shape[1]} total")
+        return X
+
+    def entrenar(self, X, y):
+        print("\n  [Entrenamiento] Validación cruzada cv=5:")
+        candidatos = {
+            "Random Forest":       RandomForestClassifier(n_estimators=100, random_state=42),
+            "Gradient Boosting":   GradientBoostingClassifier(n_estimators=100, random_state=42),
+            "Logistic Regression": LogisticRegression(max_iter=500, random_state=42),
+        }
+        for nombre, modelo in candidatos.items():
+            scores = cross_val_score(modelo, X, y, cv=5, scoring="accuracy")
+            m, s   = scores.mean(), scores.std()
+            self.metricas[nombre] = {"accuracy_media": round(m, 4), "std": round(s, 4)}
+            print(f"    {nombre}: {m:.4f} +/- {s:.4f}")
+            if m > self.mejor_score:
+                self.mejor_score  = m
+                self.mejor_nombre = nombre
+                self.mejor_modelo = modelo
+        self.mejor_modelo.fit(X, y)
+        print(f"\n  Mejor modelo: {self.mejor_nombre} ({self.mejor_score:.4f})")
+
+    def procesar(self, df, df_orig):
+        emb = self.generar_embeddings(df_orig)
+        X   = self.construir_features(df, emb)
+        y   = df["rendimiento_enc"].values
+        self.entrenar(X, y)
+        return {
+            "modelo":         self.mejor_modelo,
+            "nombre_modelo":  self.mejor_nombre,
+            "metricas":       self.metricas,
+            "mejor_accuracy": self.mejor_score,
+            "X": X, "y": y,
+        }
+
+agente2   = AgenteEntrenador()
+resultado = agente2.procesar(df_limpio, df_raw)
